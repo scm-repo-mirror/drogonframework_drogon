@@ -174,7 +174,7 @@ class HttpOptionsMiddlewareImpl
     {
         // Tag OPTIONS
         if (req && req->method() == drogon::HttpMethod::Options)
-            req->attributes()->insert("customCORShandling", true);
+            req->attributes()->insert("drogon.customCORShandling", true);
         // continue with next middleware (no post-processing here)
         nextCb(std::move(mcb));
     }

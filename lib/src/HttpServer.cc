@@ -577,13 +577,17 @@ template <typename Pack>
 void HttpServer::requestPreHandling(const HttpRequestImplPtr &req, Pack &&pack)
 {
     // Handle CORS preflight request, except when custom handling is desired
-    if ((req->method() == Options) &&
-        !req->attributes()->get<bool>("customCORShandling"))
+    if ((req->method() == Options))
     {
-        handleHttpOptions(req,
-                          *pack.binderPtr->corsMethods_,
-                          std::move(pack.callback));
-        return;
+        if (req->attributes()->get<bool>("drogon.customCORShandling"))
+        {
+            handleHttpOptions(req,
+                              *pack.binderPtr->corsMethods_,
+                              std::move(pack.callback));
+            return;
+        }
+        req->attributes()->insert("drogon.corsMethods",
+                                  *pack.binderPtr->corsMethods_);
     }
 
     // pre-handling aop
